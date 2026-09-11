@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASAT Team Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .summary-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .summary-card h3 {
+            color: #666;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .summary-card .value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .current-score .value {
+            color: #667eea;
+        }
+
+        .target-score .value {
+            color: #764ba2;
+        }
+
+        .gap .value {
+            color: #ff6b6b;
+        }
+
+        .responses-section {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .responses-title {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .response-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .response-item {
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .response-item .stars {
+            font-size: 1.5em;
+            margin-bottom: 8px;
+        }
+
+        .response-item .count {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .response-item .label {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #764ba2;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #653a87;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(118, 75, 162, 0.4);
+        }
+
+        .tracker-section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .tracker-title {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .team-member-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .team-member-card:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .member-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-number {
+            font-size: 0.8em;
+            background: #667eea;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .score-row .label {
+            color: #666;
+        }
+
+        .score-row .value {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .current-score-value {
+            color: #667eea;
+        }
+
+        .target-score-value {
+            color: #764ba2;
+        }
+
+        .gap-value {
+            color: #ff6b6b;
+        }
+
+        .progress-container {
+            margin-top: 15px;
+        }
+
+        .progress-label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-achieved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .edit-mode-section {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .edit-mode-section h3 {
+            color: #856404;
+            margin-bottom: 15px;
+        }
+
+        .edit-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 0.9em;
+            color: #333;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .summary-section {
+                grid-template-columns: 1fr;
+            }
+
+            .response-breakdown {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>📊 ASAT Team Tracker</h1>
+            <p>Assessment Scores & Performance Dashboard</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-section">
+            <div class="summary-card current-score">
+                <h3>Current Team Score</h3>
+                <div class="value" id="currentScoreDisplay">4.49</div>
+            </div>
+            <div class="summary-card target-score">
+                <h3>Target Score</h3>
+                <div class="value" id="targetScoreDisplay">4.2</div>
+            </div>
+            <div class="summary-card gap">
+                <h3>Gap Needed</h3>
+                <div class="value" id="gapDisplay">-0.29</div>
+            </div>
+        </div>
+
+        <!-- Response Breakdown -->
+        <div class="responses-section">
+            <div class="responses-title">Response Breakdown</div>
+            <div class="response-breakdown">
+                <div class="response-item">
+                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                    <div class="count" id="count5">77</div>
+                    <div class="label">5-Star Responses</div>
+                </div>
+                <div class="response-item">
+                    <div class="stars">⭐⭐⭐⭐</div>
+                    <div class="count" id="count4">2</div>
+                    <div class="label">4-Star Responses</div>
+                </div>
+                <div class="response-item">
+                    <div class="stars">⭐⭐⭐</div>
+                    <div class="count" id="count3">7</div>
+                    <div class="label">3-Star Responses</div>
+                </div>
+                <div class="response-item">
+                    <div class="stars">⭐</div>
+                    <div class="count" id="count1">8</div>
+                    <div class="label">1-Star Responses</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="controls">
+            <button class="btn btn-primary" onclick="toggleEditMode()">✏️ Edit Data</button>
+            <button class="btn btn-secondary" onclick="exportData()">📥 Export Data</button>
+        </div>
+
+        <!-- Edit Mode Section -->
+        <div class="edit-mode-section hidden" id="editModeSection">
+            <h3>📝 Update Scores & Responses</h3>
+            <div class="edit-form">
+                <div class="form-group">
+                    <label>Current Team Score</label>
+                    <input type="number" id="editCurrentScore" step="0.01" placeholder="4.49">
+                </div>
+                <div class="form-group">
+                    <label>Target Score</label>
+                    <input type="number" id="editTargetScore" step="0.01" placeholder="4.2">
+                </div>
+                <div class="form-group">
+                    <label>5-Star Responses</label>
+                    <input type="number" id="editCount5" placeholder="77">
+                </div>
+                <div class="form-group">
+                    <label>4-Star Responses</label>
+                    <input type="number" id="editCount4" placeholder="2">
+                </div>
+                <div class="form-group">
+                    <label>3-Star Responses</label>
+                    <input type="number" id="editCount3" placeholder="7">
+                </div>
+                <div class="form-group">
+                    <label>1-Star Responses</label>
+                    <input type="number" id="editCount1" placeholder="8">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="saveData()" style="margin-top: 15px;">💾 Save Changes</button>
+            <button class="btn btn-secondary" onclick="toggleEditMode()" style="margin-top: 15px;">❌ Cancel</button>
+        </div>
+
+        <!-- Team Tracker -->
+        <div class="tracker-section">
+            <div class="tracker-title">👥 Team Members Performance</div>
+            <div class="team-grid" id="teamGrid">
+                <!-- Team members will be populated here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Team members data
+        const teamMembers = [
+            "Tan Kok Ming",
+            "Chng Pei Mun",
+            "Cheah Mun Lok",
+            "Bong Su Feng",
+            "Ong Yu Xin",
+            "Lee Xing Le",
+            "Roderic Poh",
+            "Xuan En Jee",
+            "Ho Yan Wong",
+            "Tan Meng Kiat",
+            "Sean Tay",
+            "Chai Min Kang",
+            "Pink Ng Yong",
+            "Ong Man Yee",
+            "Yong Mee Ting",
+            "Nicole Ku Lin Shi",
+            "Yap Lil Yoon"
+        ];
+
+        // Initial data
+        let data = {
+            currentScore: 4.49,
+            targetScore: 4.2,
+            count5: 77,
+            count4: 2,
+            count3: 7,
+            count1: 8
+        };
+
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('asatTrackerData');
+            if (saved) {
+                data = JSON.parse(saved);
+            }
+            updateDisplay();
+        }
+
+        // Save data to localStorage
+        function saveData() {
+            data.currentScore = parseFloat(document.getElementById('editCurrentScore').value) || data.currentScore;
+            data.targetScore = parseFloat(document.getElementById('editTargetScore').value) || data.targetScore;
+            data.count5 = parseInt(document.getElementById('editCount5').value) || data.count5;
+            data.count4 = parseInt(document.getElementById('editCount4').value) || data.count4;
+            data.count3 = parseInt(document.getElementById('editCount3').value) || data.count3;
+            data.count1 = parseInt(document.getElementById('editCount1').value) || data.count1;
+
+            localStorage.setItem('asatTrackerData', JSON.stringify(data));
+            updateDisplay();
+            toggleEditMode();
+            alert('✅ Data saved successfully!');
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            const editSection = document.getElementById('editModeSection');
+            editSection.classList.toggle('hidden');
+
+            // Pre-fill form with current values
+            document.getElementById('editCurrentScore').value = data.currentScore;
+            document.getElementById('editTargetScore').value = data.targetScore;
+            document.getElementById('editCount5').value = data.count5;
+            document.getElementById('editCount4').value = data.count4;
+            document.getElementById('editCount3').value = data.count3;
+            document.getElementById('editCount1').value = data.count1;
+        }
+
+        // Calculate gap
+        function calculateGap() {
+            return (data.currentScore - data.targetScore).toFixed(2);
+        }
+
+        // Calculate progress percentage
+        function calculateProgress() {
+            const gap = Math.abs(calculateGap());
+            const maxGap = 5; // Maximum possible gap from 0 to 5
+            return Math.min((gap / maxGap) * 100, 100);
+        }
+
+        // Update display
+        function updateDisplay() {
+            const gap = calculateGap();
+            const progress = calculateProgress();
+
+            // Update summary cards
+            document.getElementById('currentScoreDisplay').textContent = data.currentScore.toFixed(2);
+            document.getElementById('targetScoreDisplay').textContent = data.targetScore.toFixed(2);
+            document.getElementById('gapDisplay').textContent = gap >= 0 ? `+${gap}` : gap;
+
+            // Update response counts
+            document.getElementById('count5').textContent = data.count5;
+            document.getElementById('count4').textContent = data.count4;
+            document.getElementById('count3').textContent = data.count3;
+            document.getElementById('count1').textContent = data.count1;
+
+            // Render team grid
+            renderTeamGrid();
+        }
+
+        // Render team grid
+        function renderTeamGrid() {
+            const grid = document.getElementById('teamGrid');
+            grid.innerHTML = '';
+
+            const gap = parseFloat(calculateGap());
+            const scorePerMember = gap / teamMembers.length;
+            const progress = calculateProgress();
+
+            teamMembers.forEach((member, index) => {
+                const memberScore = data.currentScore + (scorePerMember * (index - teamMembers.length / 2));
+                const memberProgress = Math.max(0, Math.min(100, (memberScore / 5) * 100));
+                const isAchieved = memberScore >= data.targetScore;
+
+                const card = document.createElement('div');
+                card.className = 'team-member-card';
+                card.innerHTML = `
+                    <div class="member-name">
+                        <span>${member}</span>
+                        <span class="member-number">#${index + 1}</span>
+                    </div>
+                    <div class="score-row">
+                        <span class="label">Current Score:</span>
+                        <span class="value current-score-value">${memberScore.toFixed(2)}</span>
+                    </div>
+                    <div class="score-row">
+                        <span class="label">Target Score:</span>
+                        <span class="value target-score-value">${data.targetScore.toFixed(2)}</span>
+                    </div>
+                    <div class="score-row">
+                        <span class="label">Gap Needed:</span>
+                        <span class="value gap-value">${(data.targetScore - memberScore).toFixed(2)}</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-label">
+                            <span>Progress</span>
+                            <span>${Math.round(memberProgress)}%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${memberProgress}%"></div>
+                        </div>
+                    </div>
+                    <span class="status-badge ${isAchieved ? 'status-achieved' : 'status-pending'}">
+                        ${isAchieved ? '✅ Target Achieved' : '⏳ In Progress'}
+                    </span>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Export data as CSV
+        function exportData() {
+            let csv = 'ASAT Team Tracker Export\n';
+            csv += `Generated: ${new Date().toLocaleString()}\n\n`;
+            csv += `Current Team Score,${data.currentScore}\n`;
+            csv += `Target Score,${data.targetScore}\n`;
+            csv += `Gap Needed,${calculateGap()}\n\n`;
+            csv += 'Response Breakdown\n';
+            csv += `5-Star,${data.count5}\n`;
+            csv += `4-Star,${data.count4}\n`;
+            csv += `3-Star,${data.count3}\n`;
+            csv += `1-Star,${data.count1}\n\n`;
+            csv += 'Team Members\n';
+            csv += 'Name,Number\n';
+
+            teamMembers.forEach((member, index) => {
+                csv += `${member},${index + 1}\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `ASAT_Tracker_${new Date().getTime()}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', loadData);
+    </script>
+</body>
+</html>
