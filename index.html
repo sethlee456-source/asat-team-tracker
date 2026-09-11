@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASAT Team Tracker</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='48'%3E%F0%9F%90%89%3C/text%3E%3C/svg%3E">
     <style>
         * {
             margin: 0;
@@ -188,6 +189,25 @@
         .battle-copy strong {
             font-size: 1.2rem;
             color: var(--text-main);
+        }
+
+        .dragon-fly {
+            position: absolute;
+            left: -140px;
+            top: 92px;
+            width: 108px;
+            z-index: 3;
+            pointer-events: none;
+            filter: drop-shadow(0 0 20px rgba(137, 87, 255, 0.6));
+            animation: dragonFlyPath 16s linear infinite;
+        }
+
+        .dragon-fly img {
+            width: 100%;
+            height: auto;
+            display: block;
+            animation: dragonWingFlap 0.7s ease-in-out infinite;
+            transform-origin: center;
         }
 
         .creature {
@@ -631,6 +651,37 @@
             50% { transform: translateY(-10px) scale(1.2); opacity: 1; }
         }
 
+        @keyframes dragonFlyPath {
+            0% {
+                left: -140px;
+                top: 94px;
+                transform: rotate(-2deg) scale(0.82);
+            }
+            22% {
+                top: 42px;
+                transform: rotate(2deg) scale(0.92);
+            }
+            48% {
+                left: calc(100% - 56px);
+                top: 78px;
+                transform: rotate(-1deg) scale(1);
+            }
+            74% {
+                top: 36px;
+                transform: rotate(3deg) scale(0.92);
+            }
+            100% {
+                left: -140px;
+                top: 94px;
+                transform: rotate(-2deg) scale(0.82);
+            }
+        }
+
+        @keyframes dragonWingFlap {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50% { transform: translateY(-7px) rotate(3deg); }
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 1.8em;
@@ -646,6 +697,10 @@
 
             .creature-storm {
                 right: 9%;
+            }
+
+            .dragon-fly {
+                width: 86px;
             }
 
             .team-grid {
@@ -666,12 +721,15 @@
     <div class="container">
         <!-- Header -->
         <div class="header">
-            <h1>📊 ASAT Team Tracker</h1>
+            <h1>🐉 📊 ASAT Team Tracker</h1>
             <p>Assessment Scores & Performance Dashboard</p>
             <div class="hero-scene" aria-hidden="true">
                 <div class="battle-copy">
                     <span>Fantasy RGB Arena</span>
                     <strong>Monster-battle energy mode</strong>
+                </div>
+                <div class="dragon-fly">
+                    <img alt="Flying dragon" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 110'%3E%3Cdefs%3E%3CradialGradient id='glow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.95'/%3E%3Cstop offset='100%25' stop-color='%238957ff' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cellipse cx='90' cy='55' rx='80' ry='36' fill='url(%23glow)'/%3E%3Ctext x='90' y='68' text-anchor='middle' font-size='74'%3E%F0%9F%90%89%3C/text%3E%3C/svg%3E">
                 </div>
                 <div class="arena-ring"></div>
                 <div class="orb" style="left: 50%; top: 50%;"></div>
