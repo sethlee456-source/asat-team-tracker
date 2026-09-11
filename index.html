@@ -730,7 +730,7 @@
 
         <!-- Controls -->
         <div class="controls">
-            <button class="btn btn-primary" onclick="toggleEditMode()">✏️ Edit Data</button>
+            <button class="btn btn-primary" id="editToggleButton" onclick="toggleEditMode()">✏️ Edit Data</button>
             <button class="btn btn-secondary" onclick="exportData()">📥 Export Data</button>
         </div>
 
@@ -835,15 +835,26 @@
         // Toggle edit mode
         function toggleEditMode() {
             const editSection = document.getElementById('editModeSection');
-            editSection.classList.toggle('hidden');
+            const editToggleButton = document.getElementById('editToggleButton');
+            const isNowHidden = editSection.classList.toggle('hidden');
+            const isEditVisible = !isNowHidden;
 
-            // Pre-fill form with current values
-            document.getElementById('editCurrentScore').value = data.currentScore;
-            document.getElementById('editTargetScore').value = data.targetScore;
-            document.getElementById('editCount5').value = data.count5;
-            document.getElementById('editCount4').value = data.count4;
-            document.getElementById('editCount3').value = data.count3;
-            document.getElementById('editCount1').value = data.count1;
+            editToggleButton.textContent = isEditVisible ? '🙈 Hide Edit Form' : '✏️ Edit Data';
+
+            if (isEditVisible) {
+                // Pre-fill form with current values
+                document.getElementById('editCurrentScore').value = data.currentScore;
+                document.getElementById('editTargetScore').value = data.targetScore;
+                document.getElementById('editCount5').value = data.count5;
+                document.getElementById('editCount4').value = data.count4;
+                document.getElementById('editCount3').value = data.count3;
+                document.getElementById('editCount1').value = data.count1;
+
+                requestAnimationFrame(() => {
+                    editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('editCurrentScore').focus();
+                });
+            }
         }
 
         // Calculate gap
