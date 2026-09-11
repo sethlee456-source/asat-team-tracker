@@ -575,24 +575,66 @@
         }
 
         .edit-mode-section {
-            background: rgba(53, 38, 12, 0.7);
-            padding: 20px;
-            border-radius: 18px;
+            background:
+                linear-gradient(145deg, rgba(11, 15, 35, 0.94), rgba(20, 14, 44, 0.92));
+            padding: 24px;
+            border-radius: 22px;
             margin-bottom: 30px;
-            border-left: 4px solid var(--rgb-gold);
-            border: 1px solid rgba(255, 209, 102, 0.22);
-            box-shadow: 0 16px 34px rgba(0, 0, 0, 0.22);
+            border: 1px solid rgba(69, 247, 255, 0.28);
+            box-shadow:
+                0 18px 38px rgba(0, 0, 0, 0.32),
+                inset 0 0 0 1px rgba(137, 87, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(14px);
+        }
+
+        .edit-mode-section::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(120deg, rgba(69, 247, 255, 0.1), transparent 40%, rgba(255, 79, 216, 0.08)),
+                repeating-linear-gradient(
+                    90deg,
+                    rgba(137, 87, 255, 0.08) 0 1px,
+                    transparent 1px 28px
+                );
+            pointer-events: none;
         }
 
         .edit-mode-section h3 {
-            color: var(--rgb-gold);
-            margin-bottom: 15px;
+            color: var(--rgb-cyan);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-shadow: 0 0 14px rgba(69, 247, 255, 0.36);
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-dragon {
+            display: flex;
+            justify-content: flex-end;
+            margin: -4px 0 10px;
+            pointer-events: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-dragon img {
+            width: 92px;
+            height: auto;
+            filter: drop-shadow(0 0 16px rgba(137, 87, 255, 0.45));
+            animation: dragonWingFlap 0.7s ease-in-out infinite, floatCreature 3.6s ease-in-out infinite;
         }
 
         .edit-form {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 15px;
+            position: relative;
+            z-index: 1;
         }
 
         .form-group {
@@ -601,25 +643,64 @@
         }
 
         .form-group label {
-            font-size: 0.9em;
-            color: var(--text-main);
-            margin-bottom: 5px;
+            font-size: 0.8em;
+            color: #d6d4ff;
+            margin-bottom: 6px;
             font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
         }
 
         .form-group input {
-            padding: 8px 12px;
-            border: 1px solid rgba(137, 87, 255, 0.3);
-            border-radius: 5px;
+            padding: 10px 12px;
+            border: 1px solid rgba(137, 87, 255, 0.45);
+            border-radius: 10px;
             font-size: 1em;
-            background: rgba(12, 10, 28, 0.75);
+            background: rgba(7, 10, 25, 0.88);
             color: var(--text-main);
+            box-shadow: inset 0 0 0 1px rgba(69, 247, 255, 0.06);
+            transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
         }
 
         .form-group input:focus {
             outline: none;
             border-color: var(--rgb-cyan);
-            box-shadow: 0 0 0 3px rgba(69, 247, 255, 0.12);
+            box-shadow:
+                0 0 0 3px rgba(69, 247, 255, 0.18),
+                0 0 24px rgba(69, 247, 255, 0.14);
+            transform: translateY(-1px);
+        }
+
+        .edit-mode-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .edit-mode-actions .btn {
+            border-radius: 10px;
+            border: 1px solid rgba(137, 87, 255, 0.35);
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+        }
+
+        .edit-mode-actions .btn-primary {
+            background: linear-gradient(90deg, #1be5ff, #6a4fff 52%, #ff4fd8);
+        }
+
+        .edit-mode-actions .btn-primary:hover {
+            box-shadow: 0 12px 28px rgba(69, 247, 255, 0.3);
+        }
+
+        .edit-mode-actions .btn-secondary {
+            background: linear-gradient(90deg, rgba(18, 25, 52, 0.92), rgba(37, 18, 56, 0.92));
+            border-color: rgba(255, 79, 216, 0.35);
+        }
+
+        .edit-mode-actions .btn-secondary:hover {
+            box-shadow: 0 12px 28px rgba(255, 79, 216, 0.24);
         }
 
         .hidden {
@@ -701,6 +782,18 @@
 
             .dragon-fly {
                 width: 86px;
+            }
+
+            .form-dragon {
+                justify-content: center;
+            }
+
+            .form-dragon img {
+                width: 84px;
+            }
+
+            .edit-mode-actions .btn {
+                width: 100%;
             }
 
             .team-grid {
@@ -796,6 +889,9 @@
         <!-- Edit Mode Section -->
         <div class="edit-mode-section hidden" id="editModeSection">
             <h3>📝 Update Scores & Responses</h3>
+            <div class="form-dragon" aria-hidden="true">
+                <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 110'%3E%3Cdefs%3E%3CradialGradient id='glow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.95'/%3E%3Cstop offset='100%25' stop-color='%238957ff' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cellipse cx='90' cy='55' rx='80' ry='36' fill='url(%23glow)'/%3E%3Ctext x='90' y='68' text-anchor='middle' font-size='74'%3E%F0%9F%90%89%3C/text%3E%3C/svg%3E">
+            </div>
             <div class="edit-form">
                 <div class="form-group">
                     <label>Current Team Score</label>
@@ -822,8 +918,10 @@
                     <input type="number" id="editCount1" placeholder="8">
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="saveData()" style="margin-top: 15px;">💾 Save Changes</button>
-            <button class="btn btn-secondary" onclick="toggleEditMode()" style="margin-top: 15px;">❌ Cancel</button>
+            <div class="edit-mode-actions">
+                <button class="btn btn-primary" onclick="saveData()">💾 Save Changes</button>
+                <button class="btn btn-secondary" onclick="toggleEditMode()">❌ Cancel</button>
+            </div>
         </div>
 
         <!-- Team Tracker -->
