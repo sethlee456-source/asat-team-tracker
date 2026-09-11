@@ -881,13 +881,13 @@
 
         <!-- Controls -->
         <div class="controls">
-            <button class="btn btn-primary" id="editToggleButton" onclick="toggleEditMode()">✏️ Edit Data</button>
+            <button class="btn btn-primary" id="editToggleButton" onclick="toggleEditMode()">🙈 Hide Edit Form</button>
             <button class="btn btn-secondary" onclick="exportData()">📥 Export Data</button>
             <button class="btn btn-secondary" onclick="copyDirectInputLink()">🔗 Copy Input Link</button>
         </div>
 
         <!-- Edit Mode Section -->
-        <div class="edit-mode-section hidden" id="editModeSection">
+        <div class="edit-mode-section" id="editModeSection">
             <h3>📝 Update Scores & Responses</h3>
             <div class="form-dragon" aria-hidden="true">
                 <img alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 110'%3E%3Cdefs%3E%3CradialGradient id='glow' cx='50%25' cy='50%25' r='50%25'%3E%3Cstop offset='0%25' stop-color='%23ffffff' stop-opacity='0.95'/%3E%3Cstop offset='100%25' stop-color='%238957ff' stop-opacity='0'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cellipse cx='90' cy='55' rx='80' ry='36' fill='url(%23glow)'/%3E%3Ctext x='90' y='68' text-anchor='middle' font-size='74'%3E%F0%9F%90%89%3C/text%3E%3C/svg%3E">
@@ -972,9 +972,10 @@
                 data = JSON.parse(saved);
             }
             updateDisplay();
+            populateEditForm();
 
             if (shouldOpenInputFormFromLink()) {
-                toggleEditMode();
+                setEditModeVisibility(true);
             }
         }
 
@@ -1021,29 +1022,38 @@
             alert('✅ Data saved successfully!');
         }
 
-        // Toggle edit mode
-        function toggleEditMode() {
+        function populateEditForm() {
+            document.getElementById('editCurrentScore').value = data.currentScore;
+            document.getElementById('editTargetScore').value = data.targetScore;
+            document.getElementById('editCount5').value = data.count5;
+            document.getElementById('editCount4').value = data.count4;
+            document.getElementById('editCount3').value = data.count3;
+            document.getElementById('editCount1').value = data.count1;
+        }
+
+        function setEditModeVisibility(visible) {
             const editSection = document.getElementById('editModeSection');
             const editToggleButton = document.getElementById('editToggleButton');
-            const isNowHidden = editSection.classList.toggle('hidden');
-            const isEditVisible = !isNowHidden;
+            const isEditVisible = Boolean(visible);
 
+            editSection.classList.toggle('hidden', !isEditVisible);
             editToggleButton.textContent = isEditVisible ? '🙈 Hide Edit Form' : '✏️ Edit Data';
 
             if (isEditVisible) {
                 // Pre-fill form with current values
-                document.getElementById('editCurrentScore').value = data.currentScore;
-                document.getElementById('editTargetScore').value = data.targetScore;
-                document.getElementById('editCount5').value = data.count5;
-                document.getElementById('editCount4').value = data.count4;
-                document.getElementById('editCount3').value = data.count3;
-                document.getElementById('editCount1').value = data.count1;
+                populateEditForm();
 
                 requestAnimationFrame(() => {
                     editSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     document.getElementById('editCurrentScore').focus();
                 });
             }
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            const editSection = document.getElementById('editModeSection');
+            setEditModeVisibility(editSection.classList.contains('hidden'));
         }
 
         // Calculate gap
