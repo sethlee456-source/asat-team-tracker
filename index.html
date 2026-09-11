@@ -732,6 +732,7 @@
         <div class="controls">
             <button class="btn btn-primary" id="editToggleButton" onclick="toggleEditMode()">✏️ Edit Data</button>
             <button class="btn btn-secondary" onclick="exportData()">📥 Export Data</button>
+            <button class="btn btn-secondary" onclick="copyDirectInputLink()">🔗 Copy Input Link</button>
         </div>
 
         <!-- Edit Mode Section -->
@@ -815,6 +816,38 @@
                 data = JSON.parse(saved);
             }
             updateDisplay();
+
+            if (shouldOpenInputFormFromLink()) {
+                toggleEditMode();
+            }
+        }
+
+        // Detect direct-link request for input form
+        function shouldOpenInputFormFromLink() {
+            const params = new URLSearchParams(window.location.search);
+            const inputParam = params.get('input');
+            const editParam = params.get('edit');
+            const hash = window.location.hash.toLowerCase();
+            const acceptsParam = (value) => value === '' || value === '1' || value === 'true';
+
+            return acceptsParam(inputParam) || acceptsParam(editParam) || hash === '#input' || hash === '#edit' || hash === '#form';
+        }
+
+        // Copy direct link that opens input form
+        function copyDirectInputLink() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('input', '1');
+            url.hash = 'input';
+            const directLink = url.toString();
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(directLink)
+                    .then(() => alert('✅ Direct input link copied! Share it with everyone.'))
+                    .catch(() => window.prompt('Copy this direct input link:', directLink));
+                return;
+            }
+
+            window.prompt('Copy this direct input link:', directLink);
         }
 
         // Save data to localStorage
